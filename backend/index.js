@@ -6,7 +6,7 @@ const axios            = require('axios');
 const nodemailer       = require('nodemailer');
 const { PrismaClient } = require('@prisma/client');
 const { google }       = require('googleapis');
-const { GoogleGenAI }  = require('@google/genai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const app    = express();
 const prisma = new PrismaClient();
@@ -82,8 +82,8 @@ async function getTodaysEvents() {
 // —————————————————————————
 async function planAndScheduleTask(task) {
   try {
-    const ai    = new GoogleGenAI(process.env.GEMINI_API_KEY);
-    const model = ai.getGenerativeModel({ model: 'gemini-2.5-pro' });
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     let prompt = `You are an AI scheduling assistant. I have a task: "${task.title}".`;
     if (task.description) prompt += ` Details: ${task.description}.`;
@@ -92,7 +92,8 @@ async function planAndScheduleTask(task) {
     prompt += ` Divide into actionable steps and suggest a date/time schedule for each before the deadline. Return a concise list.`;
 
     const response = await model.generateContent(prompt);
-    console.log('AI Plan for task:', response.text.trim());
+    const result = await response.response.text();
+    console.log('AI Plan for task:', result);
 
     return await createCalendarEvent(task);
   } catch (err) {
@@ -103,8 +104,8 @@ async function planAndScheduleTask(task) {
 
 async function generateDailySummary() {
   try {
-    const ai    = new GoogleGenAI(process.env.GEMINI_API_KEY);
-    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     const events = await getTodaysEvents();
     let summaryPrompt;
@@ -123,8 +124,9 @@ async function generateDailySummary() {
     }
 
     const resp = await model.generateContent(summaryPrompt);
-    console.log('Daily Summary:', resp.text.trim());
-    return resp.text.trim();
+    const result = await resp.response.text();
+    console.log('Daily Summary:', result);
+    return result;
   } catch (err) {
     console.error('AI summary failed:', err);
     return 'Unable to generate summary.';
