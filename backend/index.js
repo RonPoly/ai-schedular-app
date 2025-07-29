@@ -205,7 +205,9 @@ app.post('/api/tasks', async (req, res) => {
       data: {
         title,
         description: description || '',
-        tags:        tags || '',
+        tags:        typeof tags === 'object'
+                        ? JSON.stringify(tags)
+                        : tags || '',
         dueDate:     dueDate ? new Date(dueDate) : null,
         user:        { connect: { googleId: user.googleId } }
       }
