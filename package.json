@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@google/genai": "^1.11.0",
+    "@google/generative-ai": "^0.2.1",
     "@prisma/client": "^6.13.0",
     "axios": "^1.11.0",
     "cors": "^2.8.5",
