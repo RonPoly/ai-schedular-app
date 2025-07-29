@@ -1,0 +1,47 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  /**  
+   * Use the Google subject (sub) field from their ID token  
+   * as the primary key—this is stable and globally unique.  
+   */
+  googleId          String   @id
+
+  /**  
+   * Optional: store name & email for UI or logging  
+   */
+  email             String?
+  name              String?
+
+  /**  
+   * Store their calendar refresh token  
+   */
+  googleRefreshToken String
+
+  tasks             Task[]   @relation("UserTasks")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Task {
+  id               Int      @id @default(autoincrement())
+  title            String
+  description      String?
+  tags             String?
+  dueDate          DateTime?
+  calendarEventId  String?
+  createdAt        DateTime @default(now())
+
+  /**  
+   * Tie each task to the Google user via googleId  
+   */
+  user             User     @relation("UserTasks", fields: [userGoogleId], references: [googleId])
+  userGoogleId     String
+}
