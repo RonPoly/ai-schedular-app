@@ -83,7 +83,7 @@ async function getTodaysEvents() {
 async function planAndScheduleTask(task) {
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro-latest' });
 
     let prompt = `You are an AI scheduling assistant. I have a task: "${task.title}".`;
     if (task.description) prompt += ` Details: ${task.description}.`;
@@ -105,7 +105,7 @@ async function planAndScheduleTask(task) {
 async function generateDailySummary() {
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro-latest' });
 
     const events = await getTodaysEvents();
     let summaryPrompt;

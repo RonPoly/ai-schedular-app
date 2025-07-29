@@ -14,7 +14,6 @@
     "@prisma/client": "^6.13.0",
     "axios": "^1.11.0",
     "cors": "^2.8.5",
-    "curl": "^0.1.4",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "googleapis": "^154.1.0",
